@@ -373,7 +373,54 @@
 
 })(window);
 $(function() {
+		//ua判断跳转
+		var t;
 		var ua = navigator.userAgent.toLowerCase();
+		if(ua.indexOf('phone') == -1 && ua.indexOf('pad') ==-1 && ua.indexOf('android') ==-1)
+		{
+			window.location.href = 'http://'+config['web_url'];
+		} else {
+						var host = window.location.host;
+						if(ua.match(/MicroMessenger/i)=='micromessenger'&& host.indexOf(config['weixin_url'])==-1){
+						window.location.href = 'http://'+config['weixin_url']+window.location.pathname+window.location.search;
+						}
+						else if(host.indexOf(config['wap_url'])==-1 && ua.match(/MicroMessenger/i)!='micromessenger'){
+						window.location.href = 'http://'+config['wap_url']+window.location.pathname+window.location.search;
+						}				
+		}
+		//导航扩展
+		if(ua.match(/MicroMessenger/i)=='micromessenger') {
+			extend_nav= config['weixin_nav'] + config['extend_nav'];
+		} else {
+			extend_nav= config['wap_nav'] + config['extend_nav'];
+		} 
+		$("#nav").append(extend_nav);
+		//强制关注
+		if(config['share_switch']=="1"){
+			var getUrlParameter = function getUrlParameter(sParam) {
+				  var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+				  sURLVariables = sPageURL.split('&'),
+				  sParameterName,
+				  i;
+					for (i = 0; i < sURLVariables.length; i++) {
+						sParameterName = sURLVariables[i].split('=');
+
+						if (sParameterName[0] === sParam) {
+							return sParameterName[1] === undefined ? true : sParameterName[1];
+						}
+					}
+				};
+			  var from = getUrlParameter('from');
+			  if(from == "singlemessage" && ua.match(/MicroMessenger/i)=='micromessenger'){
+			  window.location.href= config['share_link']
+			  }	
+			   if(from == "groupmessage" && ua.match(/MicroMessenger/i)=='micromessenger'){
+				window.location.href= config['share_link']
+			  }
+			  if(from == "timeline" && ua.match(/MicroMessenger/i)=='micromessenger'){
+				window.location.href= config['share_link']
+			  }		
+		}
 		//图片预加载
 		$(".lazy").lazyload({ 
 	　　　　effect : "fadeIn",
